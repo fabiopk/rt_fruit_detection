@@ -9,7 +9,7 @@ class FruitModel(nn.Module):
 
         super(FruitModel, self).__init__()
 
-        self.conv1 = self._create_conv_layer(
+        self.conv1 = self._create_conv_layer_pool(
             in_channels=in_channels, out_channels=16)
         self.conv2 = self._create_conv_layer_pool(
             in_channels=16, out_channels=32)
@@ -20,11 +20,10 @@ class FruitModel(nn.Module):
         self.conv5 = self._create_conv_layer_pool(
             in_channels=64, out_channels=64)
 
-        in_features = 6*6*64
+        in_features = 3*3*64
 
-        self.linear1 = self._create_linear_layer(in_features, in_features//2)
-        self.linear2 = self._create_linear_layer(in_features//2, 1024)
-        self.linear3 = self._create_linear_layer(1024, 131)
+        self.linear1 = self._create_linear_layer(in_features, 256)
+        self.linear2 = self._create_linear_layer(256, 131)
 
     def forward(self, x):
 
@@ -43,11 +42,10 @@ class FruitModel(nn.Module):
         # Linear Layers
         x = self.linear1(x)
         x = self.linear2(x)
-        x = self.linear3(x)
 
         return x
 
-    def _create_linear_layer(self, in_features, out_features, p=0.7):
+    def _create_linear_layer(self, in_features, out_features, p=0.6):
         return nn.Sequential(
             nn.Linear(in_features, out_features),
             nn.Dropout(p=p)
