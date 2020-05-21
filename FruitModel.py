@@ -22,8 +22,8 @@ class FruitModel(nn.Module):
 
         in_features = 3*3*64
 
-        self.linear1 = self._create_linear_layer(in_features, 256)
-        self.linear2 = self._create_linear_layer(256, 131)
+        self.linear1 = self._create_linear_layer(in_features, 256, p=0.8)
+        self.linear2 = self._create_linear_layer(256, 131, p=0)
 
     def forward(self, x):
 
