@@ -4,8 +4,14 @@ import math
 
 
 class FruitModel(nn.Module):
+    """Class that represents a CNN network for processing 100x100 images into 131 classes
 
-    def __init__(self, image_size=100, in_channels=3):
+
+    Arguments:
+        in_channels {int} -- number of initial channels (default = 3 - RGB)
+    """
+
+    def __init__(self, in_channels=3):
 
         super(FruitModel, self).__init__()
 

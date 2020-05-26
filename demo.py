@@ -12,29 +12,33 @@ cap.set(cv2.CAP_PROP_FPS, 30)
 
 # Load model
 model = FruitModel()
-model.load_state_dict(torch.load('models/fruit_light_net.pt')['state_dict'])
+model.load_state_dict(torch.load('models/fruit_bg_net.pt')['state_dict'])
 model = model.cuda()
 model = model.eval()
 
-# Skip frames to slow down
-frame_number = 0
+# Center crop the image to be sent to the network
+crop_size = 300
+
 
 while(True):
     # Capture frame-by-frame
     ret, frame = cap.read()
 
     # Display the resulting frame
-    cv2.imshow('frame', frame)
-    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+    w, h, _ = frame.shape
+    starting_point = ((h-crop_size)//2, (w-crop_size)//2)
+    end_point = (starting_point[0] + crop_size, starting_point[1] + crop_size)
+    image = cv2.rectangle(frame, starting_point, end_point, (0, 0, 255), 2)
+    cv2.imshow('frame', image)
 
-    # Computes every 10 frames
-    frame_number += 1
-    if frame_number % 10:
-        continue
+    # Permute color channels
+    frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
     # Transform to torch Tensor
     torch_frame = transforms.ToPILImage()(frame)
-    torch_frame = transforms.CenterCrop((300, 300))(torch_frame)
+    torch_frame = transforms.CenterCrop((crop_size, crop_size))(torch_frame)
+    cv2.imshow('subframe', cv2.cvtColor(
+        np.array(torch_frame), cv2.COLOR_RGB2BGR))  # Shows the portion croped in a different window
     torch_frame = transforms.Resize((100, 100))(torch_frame)
     torch_frame = transforms.ToTensor()(torch_frame)
     torch_frame = torch_frame.unsqueeze(0)

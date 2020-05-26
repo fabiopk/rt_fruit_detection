@@ -3,6 +3,13 @@ import torch
 
 
 def plot_batch(batch, columns, rows):
+    """Function to plot in a grid {columns} x {rows} a given batch of images
+
+    Arguments:
+        batch {tensor} -- The batch of images
+        columns {int} -- number of columns
+        rows {int} -- number of rows
+    """
     permuted = batch.permute(0, 2, 3, 1)
     fig = plt.figure(figsize=(8, 8))
     for i in range(1, columns*rows + 1):
@@ -12,7 +19,21 @@ def plot_batch(batch, columns, rows):
 
 
 def calculate_loss_and_accuracy(loader, model, criterion, stop_at=1200, print_every=99999):
+    """Calculates loss and accuracy for a given data_loader, model and criterion
 
+    Arguments:
+        loader {DataLoader} -- The torchvision DataLoader instance
+        model {nn.Module} -- The model used in the benchmark
+        criterion {_WeightedLoss} -- The criterion used (for calculating average Loss)
+
+    Keyword Arguments:
+        stop_at {int} -- Breaks after {stop_at} batches (default: {1200})
+        print_every {int} -- Print after {print_every} batches (default: {99999})
+
+    Returns:
+        [average_loss] -- Average loss by the model
+        [accuracy] -- Accuracy in the data
+    """
     correct = 0
     total = 0
     steps = 0
@@ -53,6 +74,8 @@ def calculate_loss_and_accuracy(loader, model, criterion, stop_at=1200, print_ev
 
     accuracy = 100 * correct / total
     return total_loss/steps, accuracy
+
+# List of classes (ordered)
 
 
 classes = ['Apple Braeburn',
